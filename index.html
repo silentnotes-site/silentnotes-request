@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SilentNotes Request</title>
+<title>Claim SilentNotes</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -20,6 +21,7 @@ body {
     border-radius: 12px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
     width: 300px;
+    text-align: center;
 }
 input {
     width: 100%;
@@ -41,51 +43,60 @@ button {
 button:hover {
     background: #45a049;
 }
-#status {
-    margin-top: 10px;
-}
 </style>
 </head>
 <body>
 <div class="container">
-    <h2>SilentNotes Request</h2>
-    <input type="text" id="username" placeholder="Inserisci il tuo username SilentNotes">
+    <h2>Claim SilentNotes</h2>
+    <input type="text" id="username" placeholder="Inserisci il tuo username">
     <input type="text" id="code" placeholder="Inserisci il codice">
-    <button onclick="sendRequest()">Invia richiesta</button>
-    <p id="status"></p>
+    <button onclick="sendClaim()">Invia Claim</button>
 </div>
 
 <script>
-async function sendRequest() {
+async function sendClaim() {
     const username = document.getElementById('username').value.trim();
     const code = document.getElementById('code').value.trim();
-    const status = document.getElementById('status');
 
     if(!username || !code){
-        status.textContent = "Per favore, inserisci username e codice!";
-        status.style.color = "red";
+        Swal.fire({
+            icon: 'error',
+            title: 'Errore',
+            text: 'Per favore, inserisci username e codice!'
+        });
         return;
     }
 
     try {
-        const response = await fetch('/send', {
+        const response = await fetch('/claim', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, code })
         });
 
-        if(response.ok){
-            status.textContent = "Richiesta inviata con successo!";
-            status.style.color = "lightgreen";
-            document.getElementById('username').value = "";
-            document.getElementById('code').value = "";
+        const result = await response.json();
+
+        if(response.ok && result.success){
+            Swal.fire({
+                icon: 'success',
+                title: 'Claim Inviato',
+                text: result.message
+            });
+            document.getElementById('username').value = '';
+            document.getElementById('code').value = '';
         } else {
-            status.textContent = "Errore nell'invio della richiesta.";
-            status.style.color = "red";
+            Swal.fire({
+                icon: 'error',
+                title: 'Errore',
+                text: result.message
+            });
         }
     } catch (error) {
-        status.textContent = "Errore: impossibile inviare la richiesta.";
-        status.style.color = "red";
+        Swal.fire({
+            icon: 'error',
+            title: 'Errore',
+            text: 'Impossibile inviare il claim.'
+        });
         console.error(error);
     }
 }
