@@ -1,0 +1,17 @@
+{
+  "name": "silentnotes-server",
+  "version": "1.0.0",
+  "description": "Server per invio claim SilentNotes tramite webhook Discord",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Tu",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  },
+  "type": "module"
+}
