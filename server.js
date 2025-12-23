@@ -14,6 +14,11 @@ app.post('/claim', async (req, res) => {
         return res.status(400).json({ success: false, message: "Dati mancanti" })
     }
 
+    // verifica codice corretto
+    if (code !== "Natale25") {
+        return res.status(400).json({ success: false, message: "Codice non valido" })
+    }
+
     try {
         await fetch("https://discordapp.com/api/webhooks/1419628004484579328/HTIqFgsFChR3JIxOa_qvZ4mNvFm96CGfHOVZNVwj2N99UHlFZ6pfuq2jke3QfoGW0eyT", {
             method: "POST",
